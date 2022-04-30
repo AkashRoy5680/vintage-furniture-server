@@ -3,7 +3,7 @@ const cors = require('cors');
 require("dotenv").config();
 const port=process.env.PORT ||5000;
 const app=express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middleware
 
@@ -28,6 +28,25 @@ async function run() {
         const products=await cursor.toArray();
         res.send(products);
       });
+
+
+      //POST method to add new user and send it to server
+
+      app.post("/product",async(req,res)=>{
+        const newItem=req.body;
+        const result=await productCollection.insertOne(newItem);
+        res.send(result); 
+      });
+
+      //DELETE a data from server
+
+      app.delete("/product/:id",async(req,res)=>{
+        const id=req.params.id;
+        //console.log(req.params)
+        const query={_id:ObjectId(id)};
+        const result=await productCollection.deleteOne(query);
+        res.send(result);
+      })
       
     } finally {
       //await client.close();
