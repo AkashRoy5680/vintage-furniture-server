@@ -57,6 +57,23 @@ async function run() {
       res.send(result);
     });
 
+     //update a user
+
+     app.put("/inventory/:id",async(req,res)=>{
+      const id=req.params.id;
+      const updatedQuantity=req.body;
+      const filter={_id:ObjectId(id)}
+      const options={upsert:true}
+      const updatedDoc={
+          $set:{
+              //quantity:updatedQuantity.product
+              updatedQuantity
+          }
+      };
+      const result=await productCollection.updateOne(filter,updatedDoc,options);
+      res.send(result);
+  })
+
     //DELETE a data from server
 
     app.delete("/inventory/:id", async (req, res) => {
