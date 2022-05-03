@@ -32,12 +32,22 @@ async function run() {
     })
 
     //Load All Products
+    app.get("/items", async (req, res) => {
+      const email=req.query.email;
+      console.log(email);
+      const query = {email};
+      const cursor = productCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
+    });
+
     app.get("/inventory", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
     });
+
 
     //Load Single Product
 
