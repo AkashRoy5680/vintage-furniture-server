@@ -96,8 +96,8 @@ async function run() {
       res.send(result);
     });
 
-     //update a user
-
+     //update product quantity
+/*
      app.put("/inventory/:id",async(req,res)=>{
       const id=req.params.id;
       const updatedQuantity=req.body;
@@ -111,7 +111,26 @@ async function run() {
       };
       const result=await productCollection.updateOne(filter,updatedDoc,options);
       res.send(result);
-  })
+  })*/
+
+  //update Quantity
+
+  app.put("/restock/:id",async(req,res)=>{
+    const id=req.params.id;
+    const updatedQuantity=req.body;
+    console.log(updatedQuantity)
+    const filter={_id:ObjectId(id)}
+    const options={upsert:true}
+    const updatedDoc={
+        $set:{
+            quantity:updatedQuantity.quantity
+        }
+    };
+    const result=await productCollection.updateOne(filter,updatedDoc,options);
+    res.send(result);
+})
+
+
 
     //DELETE a data from server
 
@@ -122,6 +141,17 @@ async function run() {
       const result = await productCollection.deleteOne(query);
       res.send(result);
     });
+    
+//Delete from myitems
+  app.delete("/myitems/:id", async (req, res) => {
+  const id = req.params.id;
+  console.log(req.params);
+  const query = { _id: ObjectId(id) };
+  const result = await productCollection.deleteOne(query);
+  res.send(result);
+});
+
+
   } finally {
     //await client.close();
   }
