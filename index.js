@@ -71,9 +71,19 @@ async function run() {
     });
 //Load All Products
     app.get("/inventory", async (req, res) => {
+      console.log("query",req.query);
+      const page=parseInt(req.query.page);
+      const size=parseInt(req.query.size);
       const query = {};
       const cursor = productCollection.find(query);
-      const products = await cursor.toArray();
+      let products;
+      if(page||size){
+        products = await cursor.skip(page*size).limit(size).toArray();
+      }
+      else{
+        products = await cursor.toArray();
+      }
+       
       res.send(products);
     });
 
@@ -123,7 +133,7 @@ async function run() {
     const options={upsert:true}
     const updatedDoc={
         $set:{
-            quantity:updatedQuantity.quantity
+            quantity:updatedQuantity.newQuantity
         }
     };
     const result=await productCollection.updateOne(filter,updatedDoc,options);
@@ -132,7 +142,7 @@ async function run() {
 
 // delivered decrease update 
 
-app.put("/deliver",async(req,res)=>{
+app.put("/deliver/:id",async(req,res)=>{
   const id=req.params.id;
   const updatedQuantity=req.body;
   console.log(updatedQuantity)
@@ -140,7 +150,7 @@ app.put("/deliver",async(req,res)=>{
   const options={upsert:true}
   const updatedDoc={
       $set:{
-          quantity:updatedQuantity.quantity
+          quantity:updatedQuantity.updatedQuantity
       }
   };
   const result=await productCollection.updateOne(filter,updatedDoc,options);
@@ -167,6 +177,12 @@ app.put("/deliver",async(req,res)=>{
   const result = await productCollection.deleteOne(query);
   res.send(result);
 });
+
+//pagination
+app.get("/productCount",async(req,res)=>{
+  const count=await productCollection.estimatedDocumentCount();
+  res.send({count})
+})
 
 
   } finally {
