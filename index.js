@@ -7,7 +7,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require('jsonwebtoken');
 
 //middleware
-
+ 
 app.use(cors());
 app.use(express.json());
 
@@ -194,6 +194,10 @@ run().catch(console.dir);
 //Connection Checking
 app.get("/", (req, res) => {
   res.send("Furniture Management Server Running");
+});
+
+app.get("/heroku", (req, res) => {
+  res.send("Furniture Management Server HeroKu Checking");
 });
 
 app.listen(port, () => {
