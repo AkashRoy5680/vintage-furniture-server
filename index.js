@@ -179,7 +179,7 @@ app.put("/deliver/:id",async(req,res)=>{
 });
 
 //pagination
-app.get("/productCount",async(req,res)=>{
+app.get("/",async(req,res)=>{
   const count=await productCollection.estimatedDocumentCount();
   res.send({count})
 })
@@ -193,7 +193,7 @@ run().catch(console.dir);
 
 //Connection Checking
 app.get("/", (req, res) => {
-  res.send("Furniture Management Server Running");
+  res.send(" Management Server Running");
 });
 
 app.get("/heroku", (req, res) => {
